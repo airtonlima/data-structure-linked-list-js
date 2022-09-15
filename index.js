@@ -107,8 +107,9 @@ export default class LinkedList
 	}
 
 	toString() {
-		if (!this.head) return '';
-
+		if (!this.head) {
+			return '';
+		}
 		let objString = `${this.head.element}`;
 		let current = this.head.next;
 		for (let i = 1; i < this.size() && current; i++) {
@@ -117,25 +118,71 @@ export default class LinkedList
 		}
 		return objString;
 	}
+
+	clone(start) {
+		let curr = start, temp = null;
+
+		// insert additional node after every node of original list
+		while(curr != null) {
+			temp = curr.next;
+			// Inserting node
+			curr.next = new Node(curr.element);
+			curr.next.next = temp;
+			curr = temp;
+		}
+
+		curr = start;
+
+		// adjust the random pointers of the newly added nodes
+		while (curr != null) {
+			if (curr.next != null) {
+				curr.next.random = (curr.random != null) ? curr.random.next : curr.random;
+			}
+			// move to the next newly added node by skipping an original node
+			curr = (curr.next != null) ? curr.next.next : curr.next;
+		}
+
+		let original = start, copy = start.next;
+
+		// save the start of copied linked list
+		temp = copy;
+
+		// now separate the original list and copied list
+		while (original != null && copy != null) {
+			original.next = (original.next != null) ? original.next.next : original.next;
+			copy.next = (copy.next != null) ? copy.next.next : copy.next;
+			original = original.next;
+			copy = copy.next;
+		}
+		return temp;
+	}
 }
 
 const main = () => {
+	
 	const list = new LinkedList();
+
 	list.push(15);
 	list.push(10);
 	list.push(50);
 	list.push(30);
 	list.push(20);
 	list.push(18);
+
 	console.log(JSON.stringify(list));
-	//list.remove(3) //index
-	//console.log(JSON.stringify(list));
+	
 	list.removeAt(5);
+
 	console.log(JSON.stringify(list));
 	console.log(list.indexOf(50));
+
 	list.remove(50);
+
 	console.log(JSON.stringify(list));
-	console.log( list.size() )
+	console.log(list.toString());
+	console.log(list.size())
+
+	console.log('clone', JSON.stringify( list.clone( list.getHead() ) ) )
 };
 
 main();
