@@ -31,7 +31,7 @@ export default class LinkedList
 		this.count++;
 	}
 
-	remove(index) {
+	removeAt(index) {
 		if (index >= 0 && index < this.count) {
 			let current = this.head;
 			if (index === 0) {
@@ -76,6 +76,47 @@ export default class LinkedList
 		}
 		return false;
 	}
+
+	indexOf(element) {
+		let current = this.head;
+		for (let i = 0; i < this.count && current; i++) {
+			if (this.equalsFn(element, current.element)) {
+				return i;
+			}
+			current = current.next;
+		}
+		return -1
+		;
+	}
+
+	remove(element) {
+		const index = this.indexOf(element);
+		return this.removeAt(index);
+	}
+
+	size() {
+		return this.count;
+	}
+
+	isEmpty() {
+		return this.size() === 0;
+	}
+
+	getHead() {
+		return this.head;
+	}
+
+	toString() {
+		if (!this.head) return '';
+
+		let objString = `${this.head.element}`;
+		let current = this.head.next;
+		for (let i = 1; i < this.size() && current; i++) {
+			objString = `${objString},${current.element}`;
+			current = current.next;
+		}
+		return objString;
+	}
 }
 
 const main = () => {
@@ -89,8 +130,12 @@ const main = () => {
 	console.log(JSON.stringify(list));
 	//list.remove(3) //index
 	//console.log(JSON.stringify(list));
-	list.remove(5);
+	list.removeAt(5);
 	console.log(JSON.stringify(list));
+	console.log(list.indexOf(50));
+	list.remove(50);
+	console.log(JSON.stringify(list));
+	console.log( list.size() )
 };
 
 main();
